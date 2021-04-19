@@ -29,7 +29,8 @@ class PostController extends Controller
         $posts = $postsQuery
             ->sortable()
             ->latest()
-            ->paginate(3, '*', 'page');
+            ->paginate(3, '*', 'page')
+            ->withQueryString();
         return view('livewire.post', ['posts' => $posts]);
     }
 
