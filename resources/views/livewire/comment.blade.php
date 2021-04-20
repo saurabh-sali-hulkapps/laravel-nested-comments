@@ -110,7 +110,8 @@
             <div class="message">
                 <span>{{ $comment->comment }}</span>
                 <div class="anchor-form-span">
-                    @if($key === 0 && $comment->user->id === Auth::user()->id)
+                    {{--                    @if($key === 0 && $comment->user->id === Auth::user()->id)--}}
+                    @if($loop->first && $comment->user->id === Auth::user()->id)
                         <button id="edit" onclick="editComment({{ $comment->id }})">Edit</button>
                         &nbsp;&nbsp;&nbsp;
                         <form action="/comments/{{ $comment->id }}/" method="POST">
