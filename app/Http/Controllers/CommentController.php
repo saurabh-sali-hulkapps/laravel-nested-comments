@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SendMail;
 use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Contracts\Foundation\Application;
@@ -11,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class CommentController extends Controller
 {
@@ -48,6 +50,14 @@ class CommentController extends Controller
         $comment->user()->associate(Auth::user()->id);
         $post = Post::find($post->id);
         $post->comments()->save($comment);
+
+        $details = [
+            'user' => Auth::user()->name,
+            'body' => 'has commented on your Post:- ',
+            'post' => $post->title
+        ];
+
+        Mail::to($post->user->email)->send(new SendMail($details));
 
         return back();
     }
@@ -115,6 +125,14 @@ class CommentController extends Controller
         $reply->parent_id = $comment->id;
         $post = Post::find($post->id);
         $post->comments()->save($reply);
+
+        $details = [
+            'user' => Auth::user()->name,
+            'body' => 'has replied on your Comment',
+            'post' => ''
+        ];
+
+        Mail::to($comment->user->email)->send(new SendMail($details));
 
         return back();
     }
